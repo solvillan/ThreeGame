@@ -35,6 +35,7 @@ Enemy.prototype.update = function () {
         for (var i = 0; i < intersects.length; i++) {
             if (intersects[i].object != this._cube.mesh && intersects[i].object == player.mesh && intersects[i].distance <= 0.5) {
                 health -= 0.1;
+                if (!hurtSound.isPlaying) hurtSound.play();
                 return;
             }
         }

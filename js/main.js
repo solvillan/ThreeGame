@@ -1,5 +1,29 @@
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+var aListener = new THREE.AudioListener();
+camera.add(aListener);
+var audioLoader = new THREE.AudioLoader();
+
+var shootSound = new THREE.Audio(aListener);
+audioLoader.load("sound/shoot.wav", function (buffer) {
+   shootSound.setBuffer(buffer);
+   shootSound.setLoop(false);
+   shootSound.setVolume(1);
+});
+
+var hurtSound = new THREE.Audio(aListener);
+audioLoader.load("sound/hurt.wav", function (buffer) {
+    hurtSound.setBuffer(buffer);
+    hurtSound.setLoop(false);
+    hurtSound.setVolume(1);
+});
+
+var hitSound = new THREE.Audio(aListener);
+audioLoader.load("sound/hit.wav", function (buffer) {
+    hitSound.setBuffer(buffer);
+    hitSound.setLoop(false);
+    hitSound.setVolume(1);
+});
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -40,6 +64,8 @@ function addEnemy() {
 }
 
 function shoot() {
+    if (shootSound.isPlaying) shootSound.stop();
+    shootSound.play();
     bullets[bullets.length] = new Bullet(player.mesh.position.x, player.mesh.position.y + 0.75, player.mesh.position.z, player.mesh.rotation.y, THREE.Math.generateUUID());
     scene.add(bullets[bullets.length-1]._cube.mesh);
 }
@@ -61,6 +87,8 @@ function removeEnemy(id) {
         if (enemies[i]._cube.mesh.name == id) {
             scene.remove(enemies[i]._cube.mesh);
             enemies.splice(i, 1);
+            if (hitSound.isPlaying) hitSound.stop();
+            hitSound.play();
             break;
         }
     }
