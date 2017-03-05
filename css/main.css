@@ -20,3 +20,29 @@ canvas {
     height: 128px;
     width: 128px;
 }
+
+.score {
+    position: fixed;
+    top: 5px;
+    right: 5px;
+    z-index: 10;
+    color: white;
+}
+
+.healthBar {
+    position: fixed;
+    top: 5px;
+    left: 5px;
+    height: 20px;
+    z-index: 10;
+}
+
+.healthBarBg {
+    position: fixed;
+    top: 4px;
+    left: 4px;
+    height: 20px;
+    border: 1px solid white;
+    z-index: 9;
+    width: 200px;
+}

@@ -10,32 +10,77 @@ renderer.domElement.requestPointerLock = renderer.domElement.requestPointerLock 
 
 var lastMousePos = {};
 
-var player = new Cube(0, 0.5, 0, 1, 1, 1, 0x00ff00);
+var playerLight = new THREE.PointLight(0xffdd99, 1, 30);
+scene.add(playerLight);
+
+
+var player = new Cube(0, 0.5, 0, 1, 2, 1, 0x00ff00, "img/pillar.gif");
+player.mesh.name = THREE.Math.generateUUID();
 
 scene.add( player.mesh );
 
-var plane = new Plane(0, 0, 0, 40, 40, 0x227722);
-plane.mesh.rotation.x = -Math.PI/2;
+var plane = new Plane(0, 0, 0, 40, 40, 0xffffff, "img/ground.jpg"); // Old color: 0x35d600
+plane.mesh.rotation.x = Math.PI/2;
 scene.add(plane.mesh);
+
+var scoreDiv = document.getElementsByClassName('score')[0];
+var healthBar = document.getElementsByClassName('healthBar')[0];
 
 var enemies = [];
 var bullets = [];
 
+var score = 0;
+var health = 100;
+
 camera.position.z = 5;
 
 function addEnemy() {
-    enemies[enemies.length] = new Enemy((Math.random()-0.5)*40, (Math.random()-0.5)*40);
+    enemies[enemies.length] = new Enemy((Math.random()-0.5)*40, (Math.random()-0.5)*40, THREE.Math.generateUUID());
     scene.add(enemies[enemies.length-1]._cube.mesh);
 }
 
 function shoot() {
+    bullets[bullets.length] = new Bullet(player.mesh.position.x, player.mesh.position.y + 0.75, player.mesh.position.z, player.mesh.rotation.y, THREE.Math.generateUUID());
+    scene.add(bullets[bullets.length-1]._cube.mesh);
+}
 
+function removeBullet(id) {
+    var i;
+    for (i = 0; i < bullets.length; i++) {
+        if (bullets[i]._cube.mesh.name == id) {
+            scene.remove(bullets[i]._cube.mesh);
+            bullets.splice(i, 1);
+            break;
+        }
+    }
+}
+
+function removeEnemy(id) {
+    var i;
+    for (i = 0; i < enemies.length; i++) {
+        if (enemies[i]._cube.mesh.name == id) {
+            scene.remove(enemies[i]._cube.mesh);
+            enemies.splice(i, 1);
+            break;
+        }
+    }
 }
 
 function render() {
     requestAnimationFrame(render);
-    update();
+    //scene.updateMatrixWorld(false);
     renderer.render(scene, camera);
+    if ((document.pointerLockElement === renderer.domElement ||
+        document.mozPointerLockElement === renderer.domElement) && health > 0) update();
+}
+
+function addScore(startx, starty, startz, hit) {
+    var start = new THREE.Vector3(startx, starty, startz);
+    score += Math.min(Math.floor(Math.exp(start.distanceTo(hit)/4)-1), 100);
+}
+
+function printScore() {
+    scoreDiv.innerHTML = "Score: " + score;
 }
 
 function update() {
@@ -57,8 +102,16 @@ function update() {
     for (var i = 0; i < enemies.length; i++) {
         enemies[i].update();
     }
+    for (var j = 0; j < bullets.length; j++) {
+        bullets[j].update(scene);
+    }
+
+    printScore();
+    //console.log('width: ' + (200*(health/100)) + 'px;background-color: rgb(' + Math.abs(255*((health/100))) + ", " + Math.abs(255*(health/100)) + ", 0);")
+    healthBar.setAttribute('style', 'width: ' + (200*(health/100)) + 'px;background-color: rgb(' + Math.floor(Math.abs(255*(1-(health/100)))) + ", " + Math.floor(Math.abs(255*(health/100))) + ", 0);");
 
     camera.position.set(player.mesh.position.x, player.mesh.position.y + 1, player.mesh.position.z);
+    playerLight.position.set(player.mesh.position.x, player.mesh.position.y + 1, player.mesh.position.z);
     //camera.rotation.x = -calcRotation(Mouse.getY(), window.innerHeight);
 }
 
@@ -83,12 +136,14 @@ function updatePos() {
 document.addEventListener('mousemove', function (event) {
     lastMousePos = Mouse.getPosition();
     Mouse.update(renderer.domElement, event);
-    updatePos();
+    if (document.pointerLockElement === renderer.domElement ||
+        document.mozPointerLockElement === renderer.domElement) updatePos();
     return false;
 });
 
 renderer.domElement.addEventListener('click', function (event) {
     renderer.domElement.requestPointerLock();
+    shoot();
 });
 
 lastMousePos = Mouse.getPosition();
