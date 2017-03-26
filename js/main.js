@@ -124,6 +124,21 @@ function update() {
     if (Key.isDown(Key.LEFT)) {
         player.mesh.translateX(-0.1);
     }
+
+    //Stay within plane
+    if (player.mesh.position.z < plane.mesh.position.z-20) {
+        player.mesh.position.z = plane.mesh.position.z-20;
+    }
+    if (player.mesh.position.z > plane.mesh.position.z+20) {
+        player.mesh.position.z = plane.mesh.position.z+20;
+    }
+    if (player.mesh.position.x > plane.mesh.position.x+20) {
+        player.mesh.position.x = plane.mesh.position.x+20;
+    }
+    if (player.mesh.position.x < plane.mesh.position.x-20) {
+        player.mesh.position.x = plane.mesh.position.x-20;
+    }
+
     if (Math.random() < 0.1 && enemies.length < 20) {
         addEnemy();
     }

@@ -23,26 +23,45 @@ canvas {
 
 .score {
     position: fixed;
-    top: 5px;
-    right: 5px;
+    top: 0px;
+    right: 0px;
+    padding: 5px;
     z-index: 10;
     color: white;
+    font-size: 24px;
+    font-family: monospace;
+    background-color: rgba(62, 252, 255, 0.75);
+    border-bottom-left-radius: 5px;
+    border-bottom: 2px solid rgb(48, 173, 176);
+    border-left: 2px solid rgb(48, 173, 176);
 }
 
 .healthBar {
-    position: fixed;
-    top: 5px;
-    left: 5px;
+    position: relative;
+    top: 0px;
+    left: 0px;
     height: 20px;
     z-index: 10;
 }
 
-.healthBarBg {
-    position: fixed;
+.healthBarBorder {
+    position: relative;
     top: 4px;
     left: 4px;
     height: 20px;
     border: 1px solid white;
     z-index: 9;
     width: 200px;
+}
+
+.healthBarBg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 210px;
+    height: 30px;
+    background-color: rgba(62, 252, 255, 0.75);
+    border-bottom-right-radius: 5px;
+    border-bottom: 2px solid rgb(48, 173, 176);
+    border-right: 2px solid rgb(48, 173, 176);
 }
