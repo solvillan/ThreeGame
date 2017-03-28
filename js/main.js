@@ -38,7 +38,7 @@ var playerLight = new THREE.PointLight(0xffdd99, 1, 30);
 scene.add(playerLight);
 
 
-var player = new Cube(0, 0.5, 0, 1, 2, 1, 0x00ff00, "img/pillar.gif", THREE.RepeatWrapping, THREE.RepeatWrapping, 1, 2);
+var player = new Cube(0, 1, 0, 1, 2, 1, 0x00ff00, "img/pillar.gif", THREE.RepeatWrapping, THREE.RepeatWrapping, 1, 2);
 player.mesh.name = THREE.Math.generateUUID();
 
 scene.add( player.mesh );
@@ -57,6 +57,13 @@ scene.add(borders.left.mesh);
 scene.add(borders.right.mesh);
 scene.add(borders.top.mesh);
 scene.add(borders.bottom.mesh);
+
+var sky = new Cube(0, 0, 0, 50, 50, 50, 0xffffff, "img/sky.jpg", THREE.RepeatWrapping, THREE.RepeatWrapping, 10, 10);
+sky.mesh.scale.set(-1,1,1);
+scene.add(sky.mesh);
+
+var ambient = new THREE.AmbientLight(0xffffff, 1);
+scene.add(ambient);
 
 var scoreDiv = document.getElementsByClassName('score')[0];
 var healthBar = document.getElementsByClassName('healthBar')[0];
@@ -177,8 +184,8 @@ function update() {
     //console.log('width: ' + (200*(health/100)) + 'px;background-color: rgb(' + Math.abs(255*((health/100))) + ", " + Math.abs(255*(health/100)) + ", 0);")
     healthBar.setAttribute('style', 'width: ' + (200*(health/100)) + 'px;background-color: rgb(' + Math.floor(Math.abs(255*(1-(health/100)))) + ", " + Math.floor(Math.abs(255*(health/100))) + ", 0);");
 
-    camera.position.set(player.mesh.position.x, player.mesh.position.y + 1, player.mesh.position.z);
-    playerLight.position.set(player.mesh.position.x, player.mesh.position.y + 1, player.mesh.position.z);
+    camera.position.set(player.mesh.position.x - Math.sin(player.mesh.rotation.y), player.mesh.position.y + 0.7, player.mesh.position.z - Math.cos(player.mesh.rotation.y));
+    playerLight.position.set(player.mesh.position.x, player.mesh.position.y + 1.5, player.mesh.position.z);
     //camera.rotation.x = -calcRotation(Mouse.getY(), window.innerHeight);
 }
 
@@ -196,7 +203,7 @@ window.addEventListener('keyup', function (event) {
 
 function updatePos() {
     player.mesh.rotation.y -= calcRotation(Mouse.getDX(), window.innerWidth);
-    player.mesh.updateMatrix();
+    //player.mesh.updateMatrix();
     camera.rotation.y = player.mesh.rotation.y;
     //camera.rotation.x += calcRotation(Mouse.getDY(), window.innerHeight);
 }
