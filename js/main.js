@@ -38,23 +38,39 @@ var playerLight = new THREE.PointLight(0xffdd99, 1, 30);
 scene.add(playerLight);
 
 
-var player = new Cube(0, 0.5, 0, 1, 2, 1, 0x00ff00, "img/pillar.gif");
+var player = new Cube(0, 0.5, 0, 1, 2, 1, 0x00ff00, "img/pillar.gif", THREE.RepeatWrapping, THREE.RepeatWrapping, 1, 2);
 player.mesh.name = THREE.Math.generateUUID();
 
 scene.add( player.mesh );
 
-var plane = new Plane(0, 0, 0, 40, 40, 0xffffff, "img/ground.jpg"); // Old color: 0x35d600
+var plane = new Plane(0, 0, 0, 40, 40, 0xffffff, "img/ground.jpg", 40, 40); // Old color: 0x35d600
 plane.mesh.rotation.x = Math.PI/2;
 scene.add(plane.mesh);
 
+var borders = {
+    left: new Cube(plane.mesh.position.x-20.05, 0.5, plane.mesh.position.z, 0.2, 1, 40, 0xffffff, "img/wall.jpg", THREE.RepeatWrapping, THREE.RepeatWrapping, 40, 1),
+    right: new Cube(plane.mesh.position.x+20.05, 0.5, plane.mesh.position.z, 0.2, 1, 40, 0xffffff, "img/wall.jpg", THREE.RepeatWrapping, THREE.RepeatWrapping, 40, 1),
+    top: new Cube(plane.mesh.position.x, 0.5, plane.mesh.position.z+20.05, 40, 1, 0.2, 0xffffff, "img/wall.jpg", THREE.RepeatWrapping, THREE.RepeatWrapping, 40, 1),
+    bottom: new Cube(plane.mesh.position.x, 0.5, plane.mesh.position.z-20.05, 40, 1, 0.2, 0xffffff, "img/wall.jpg", THREE.RepeatWrapping, THREE.RepeatWrapping, 40, 1)
+};
+scene.add(borders.left.mesh);
+scene.add(borders.right.mesh);
+scene.add(borders.top.mesh);
+scene.add(borders.bottom.mesh);
+
 var scoreDiv = document.getElementsByClassName('score')[0];
 var healthBar = document.getElementsByClassName('healthBar')[0];
+var crosshair = document.getElementsByClassName('crosshair')[0];
+var gameOverView = document.getElementsByClassName('gameOver')[0];
+var goScore = document.getElementsByClassName('finalScore')[0];
 
 var enemies = [];
 var bullets = [];
 
 var score = 0;
 var health = 100;
+var gameOver = false;
+var running = false;
 
 camera.position.z = 5;
 
@@ -98,8 +114,16 @@ function render() {
     requestAnimationFrame(render);
     //scene.updateMatrixWorld(false);
     renderer.render(scene, camera);
-    if ((document.pointerLockElement === renderer.domElement ||
-        document.mozPointerLockElement === renderer.domElement) && health > 0) update();
+    if ((document.pointerLockElement === renderer.domElement || document.mozPointerLockElement === renderer.domElement) && health > 0) {
+        update();
+    } else if (running && health <= 0) {
+        if (!gameOver) {
+            gameOver = true;
+            goScore.innerHTML = score;
+            crosshair.setAttribute("style", "opacity: 0;");
+            gameOverView.setAttribute("style", "display: block; opacity: 1;");
+        }
+    }
 }
 
 function addScore(startx, starty, startz, hit) {
@@ -126,17 +150,17 @@ function update() {
     }
 
     //Stay within plane
-    if (player.mesh.position.z < plane.mesh.position.z-20) {
-        player.mesh.position.z = plane.mesh.position.z-20;
+    if (player.mesh.position.z < plane.mesh.position.z-19.5) {
+        player.mesh.position.z = plane.mesh.position.z-19.5;
     }
-    if (player.mesh.position.z > plane.mesh.position.z+20) {
-        player.mesh.position.z = plane.mesh.position.z+20;
+    if (player.mesh.position.z > plane.mesh.position.z+19.5) {
+        player.mesh.position.z = plane.mesh.position.z+19.5;
     }
-    if (player.mesh.position.x > plane.mesh.position.x+20) {
-        player.mesh.position.x = plane.mesh.position.x+20;
+    if (player.mesh.position.x > plane.mesh.position.x+19.5) {
+        player.mesh.position.x = plane.mesh.position.x+19.5;
     }
-    if (player.mesh.position.x < plane.mesh.position.x-20) {
-        player.mesh.position.x = plane.mesh.position.x-20;
+    if (player.mesh.position.x < plane.mesh.position.x-19.5) {
+        player.mesh.position.x = plane.mesh.position.x-19.5;
     }
 
     if (Math.random() < 0.1 && enemies.length < 20) {
@@ -186,6 +210,7 @@ document.addEventListener('mousemove', function (event) {
 
 renderer.domElement.addEventListener('click', function (event) {
     renderer.domElement.requestPointerLock();
+    running |= true;
     shoot();
 });
 

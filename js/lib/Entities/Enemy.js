@@ -1,5 +1,5 @@
 var Enemy = function (x, z, id) {
-    this._cube = new Cube(x, 1, z, 1, 2, 1, 0xffee00, "img/pillar.gif");
+    this._cube = new Cube(x, 1, z, 1, 2, 1, 0xffee00, "img/pillar.gif", THREE.RepeatWrapping, THREE.RepeatWrapping, 1, 2);
     this._cube.mesh.castShadow = true;
     this._cube.mesh.name = id;
 };

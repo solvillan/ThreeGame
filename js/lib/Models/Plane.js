@@ -1,7 +1,8 @@
-var Plane = function(x, y, z, height, width, color, texture) {
+var Plane = function(x, y, z, height, width, color, texture, wh, wv) {
     this.texture = new THREE.TextureLoader().load( texture );
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
+    this.texture.wrapS = THREE.RepeatWrapping;
+    this.texture.wrapT = THREE.RepeatWrapping;
+    this.texture.repeat.set(wh, wv);
     this.geometry = new THREE.PlaneGeometry(height, width);
     this.material = new THREE.MeshPhongMaterial({color : color, map: this.texture, side: THREE.DoubleSide});
     this.mesh = new THREE.Mesh(this.geometry, this.material);

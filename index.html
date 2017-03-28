@@ -12,17 +12,29 @@
 
 <div class="healthBarBg"><div class="healthBarBorder"><div class="healthBar"></div></div></div>
 
+<div class="crosshair center">
+    <img src="img/crosshair.png">
+</div>
+
+<div class="gameOver">
+    <div class="center">
+        <h1>Game Over!</h1>
+        <h2>Score: <span class="finalScore"></span></h2>
+    </div>
+</div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/threejs/r83/three.min.js"></script>
+<script>
+    if (typeof THREE == 'undefined') {
+        document.write("<script src='/js/Three.js' type='text/javascript'>\x3C/script>");
+    }
+</script>
 <script src="js/lib/Models/Cube.js"></script>
 <script src="js/lib/Models/Plane.js"></script>
 <script src="js/lib/Input.js"></script>
 <script src="js/lib/Entities/Enemy.js"></script>
 <script src="js/lib/Entities/Bullet.js"></script>
 <script src="js/main.js"></script>
-
-<div class="crosshair">
-    <img src="img/crosshair.png">
-</div>
 
 </body>
 </html>

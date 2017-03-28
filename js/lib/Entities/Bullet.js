@@ -1,5 +1,5 @@
 var Bullet = function (x, y, z, angle, id) {
-    this._cube = new Cube(x, y, z, 0.1, 0.1, 0.1, 0x333333, "img/pillar.gif");
+    this._cube = new Cube(x, y, z, 0.1, 0.1, 0.1, 0x333333, "img/pillar.gif", THREE.RepeatWrapping, THREE.RepeatWrapping, 1, 1);
     this._startx = x;
     this._starty = y;
     this._startz = z;
