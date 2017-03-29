@@ -44,7 +44,7 @@ player.mesh.name = THREE.Math.generateUUID();
 scene.add( player.mesh );
 
 var plane = new Plane(0, 0, 0, 40, 40, 0xffffff, "img/ground.jpg", 40, 40); // Old color: 0x35d600
-plane.mesh.rotation.x = Math.PI/2;
+plane.mesh.rotation.x = (3*Math.PI)/2;
 scene.add(plane.mesh);
 
 var borders = {
@@ -58,10 +58,11 @@ scene.add(borders.right.mesh);
 scene.add(borders.top.mesh);
 scene.add(borders.bottom.mesh);
 
-var sky = new Cube(0, 0, 0, 50, 50, 50, 0xffffff, "img/sky.jpg", THREE.RepeatWrapping, THREE.RepeatWrapping, 10, 10);
-sky.mesh.scale.set(-1,1,1);
+var sky = new SkyBox(0, 0, 0, 2, 0xffffff, "img/sky.jpg", THREE.RepeatWrapping, THREE.RepeatWrapping, 10, 10);
+//sky.mesh.scale.set(-1,1,1);
 scene.add(sky.mesh);
 
+//var ambient = new THREE.AmbientLight(0x030306, 0.5);
 var ambient = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambient);
 
@@ -82,8 +83,7 @@ var running = false;
 camera.position.z = 5;
 
 function addEnemy() {
-    enemies[enemies.length] = new Enemy((Math.random()-0.5)*40, (Math.random()-0.5)*40, THREE.Math.generateUUID());
-    scene.add(enemies[enemies.length-1]._cube.mesh);
+    enemies[enemies.length] = new Enemy((Math.random()-0.5)*40, (Math.random()-0.5)*40, THREE.Math.generateUUID(), scene);
 }
 
 function shoot() {
@@ -186,6 +186,7 @@ function update() {
 
     camera.position.set(player.mesh.position.x - Math.sin(player.mesh.rotation.y), player.mesh.position.y + 0.7, player.mesh.position.z - Math.cos(player.mesh.rotation.y));
     playerLight.position.set(player.mesh.position.x, player.mesh.position.y + 1.5, player.mesh.position.z);
+    //sky.mesh.position.set(player.mesh.position.x - 5*Math.sin(player.mesh.rotation.y), player.mesh.position.y + 0.7, player.mesh.position.z - 5*Math.cos(player.mesh.rotation.y));
     //camera.rotation.x = -calcRotation(Mouse.getY(), window.innerHeight);
 }
 
@@ -205,6 +206,7 @@ function updatePos() {
     player.mesh.rotation.y -= calcRotation(Mouse.getDX(), window.innerWidth);
     //player.mesh.updateMatrix();
     camera.rotation.y = player.mesh.rotation.y;
+    //sky.mesh.rotation.y = player.mesh.rotation.y;
     //camera.rotation.x += calcRotation(Mouse.getDY(), window.innerHeight);
 }
 document.addEventListener('mousemove', function (event) {

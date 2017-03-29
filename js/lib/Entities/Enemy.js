@@ -1,10 +1,12 @@
 var Enemy = function (x, z, id) {
-    this._cube = new Cube(x, 1, z, 1, 2, 1, 0xffee00, "img/pillar.gif", THREE.RepeatWrapping, THREE.RepeatWrapping, 1, 2);
+    var loader = new THREE.OBJLoader();
+    this._cube = new OBJModel(x, 1, z, 0xffee00, "img/pillar.gif", THREE.RepeatWrapping, THREE.RepeatWrapping, 1, 2, scene);
     this._cube.mesh.castShadow = true;
     this._cube.mesh.name = id;
 };
 
 Enemy.prototype.update = function () {
+    if (this._cube.mesh == null || this._cube.mesh == undefined) return;
     var speed = Math.min(Math.exp(score/50000)-0.975, 0.8);
     if (player.mesh.position.x > this._cube.mesh.position.x) {
         this._cube.mesh.translateX(speed);
