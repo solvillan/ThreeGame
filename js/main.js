@@ -58,10 +58,10 @@ scene.add(borders.right.mesh);
 scene.add(borders.top.mesh);
 scene.add(borders.bottom.mesh);
 
-var sky = new SkyBox(0, 0, 0, 2, 0xffffff, "img/sky.jpg", THREE.RepeatWrapping, THREE.RepeatWrapping, 10, 10);
+/*var sky = new SkyBox(0, 0, 0, 2, 0xffffff, "img/sky.jpg", THREE.RepeatWrapping, THREE.RepeatWrapping, 10, 10);
 //sky.mesh.scale.set(-1,1,1);
 scene.add(sky.mesh);
-
+*/
 //var ambient = new THREE.AmbientLight(0x030306, 0.5);
 var ambient = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambient);
@@ -72,7 +72,7 @@ var crosshair = document.getElementsByClassName('crosshair')[0];
 var gameOverView = document.getElementsByClassName('gameOver')[0];
 var goScore = document.getElementsByClassName('finalScore')[0];
 
-var enemies = [];
+var enemies = {};
 var bullets = [];
 
 var score = 0;
@@ -83,13 +83,14 @@ var running = false;
 camera.position.z = 5;
 
 function addEnemy() {
-    enemies[enemies.length] = new Enemy((Math.random()-0.5)*40, (Math.random()-0.5)*40, THREE.Math.generateUUID(), scene);
+    var uuid = THREE.Math.generateUUID();
+    enemies[uuid] = new Enemy((Math.random()-0.5)*40, (Math.random()-0.5)*40, uuid, scene);
 }
 
 function shoot() {
     if (shootSound.isPlaying) shootSound.stop();
     shootSound.play();
-    bullets[bullets.length] = new Bullet(player.mesh.position.x, player.mesh.position.y + 0.75, player.mesh.position.z, player.mesh.rotation.y, THREE.Math.generateUUID());
+    bullets[bullets.length] = new Bullet(player.mesh.position.x, player.mesh.position.y + 0.5, player.mesh.position.z, player.mesh.rotation.y, THREE.Math.generateUUID());
     scene.add(bullets[bullets.length-1]._cube.mesh);
 }
 
@@ -105,16 +106,16 @@ function removeBullet(id) {
 }
 
 function removeEnemy(id) {
-    var i;
-    for (i = 0; i < enemies.length; i++) {
-        if (enemies[i]._cube.mesh.name == id) {
-            scene.remove(enemies[i]._cube.mesh);
-            enemies.splice(i, 1);
-            if (hitSound.isPlaying) hitSound.stop();
-            hitSound.play();
-            break;
-        }
+    if (enemies[id]) {
+        scene.remove(enemies[id]._cube.mesh);
+        if (hitSound.isPlaying) hitSound.stop();
+        hitSound.play();
+        delete enemies[id];
     }
+}
+
+function isEnemy(id) {
+    return enemies.hasOwnProperty(id);
 }
 
 function render() {
@@ -170,11 +171,13 @@ function update() {
         player.mesh.position.x = plane.mesh.position.x-19.5;
     }
 
-    if (Math.random() < 0.1 && enemies.length < 20) {
+    if (Math.random() < 0.1 && Object.keys(enemies).length < 20) {
         addEnemy();
     }
-    for (var i = 0; i < enemies.length; i++) {
-        enemies[i].update();
+    for (var enemy in enemies) {
+        if (enemies.hasOwnProperty(enemy)) {
+            enemies[enemy].update()
+        }
     }
     for (var j = 0; j < bullets.length; j++) {
         bullets[j].update(scene);
