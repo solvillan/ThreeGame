@@ -63,8 +63,8 @@ scene.add(borders.bottom.mesh);
 scene.add(sky.mesh);
 */
 //var ambient = new THREE.AmbientLight(0x030306, 0.5);
-var ambient = new THREE.AmbientLight(0xffffff, 1);
-scene.add(ambient);
+//var ambient = new THREE.AmbientLight(0xffffff, 1);
+//scene.add(ambient);
 
 var scoreDiv = document.getElementsByClassName('score')[0];
 var healthBar = document.getElementsByClassName('healthBar')[0];
@@ -115,7 +115,7 @@ function removeEnemy(id) {
 }
 
 function isEnemy(id) {
-    return enemies.hasOwnProperty(id);
+    return enemies[id] ? true : false;
 }
 
 function render() {

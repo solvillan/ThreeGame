@@ -7,10 +7,14 @@ var ColladaModel = function(x, y, z, path, scene, id) {
     this.loaded = false;
     loader.load(path, id, function (object) {
         this.mesh = object.scene;
-        scene.add(this.mesh);
         this.mesh.position.set(x, y, z);
         this.mesh.name = id;
-        //model.mesh.scale.set(0.01, 0.01, 0.01);
+        object.scene.traverse(function (child) {
+            if (child instanceof THREE.Mesh) {
+                child.name = id;
+            }
+        }.bind(this));
+        scene.add(this.mesh);
         this.loaded = true;
     }.bind(this));
 };
