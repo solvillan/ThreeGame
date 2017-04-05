@@ -1,5 +1,5 @@
 var Enemy = function (x, z, id, scene) {
-    this._cube = new ColladaModel(x, 1, z, 'models/enemy.dae', scene, id);
+    this._cube = new ColladaModel(x, 1, z, 'models/enemy2.dae', scene, id);
 };
 
 Enemy.prototype.update = function () {
@@ -7,20 +7,13 @@ Enemy.prototype.update = function () {
     this._cube.mesh.name = this.id;
     this._cube.mesh.castShadow = true;
     var speed = Math.min(Math.exp(score/50000)-0.975, 0.8);
-    if (player.mesh.position.x > this._cube.mesh.position.x) {
-        this._cube.mesh.translateX(speed);
-    } else if (player.mesh.position.x < this._cube.mesh.position.x) {
-        this._cube.mesh.translateX(-speed);
-    }
-    if (player.mesh.position.z > this._cube.mesh.position.z) {
-        this._cube.mesh.translateZ(speed);
-    } else if (player.mesh.position.z < this._cube.mesh.position.z) {
-        this._cube.mesh.translateZ(-speed);
-    }
 
     this._cube.mesh.traverse(function (child) {
        if (child instanceof THREE.Mesh) child.geometry.computeBoundingBox();
     });
+
+    this._cube.mesh.rotation.y = Math.atan2((this._cube.mesh.position.x-player.mesh.position.x), -(player.mesh.position.z-this._cube.mesh.position.z));
+    this._cube.mesh.translateZ(-speed);
 
     var directions = [
         new THREE.Vector3(1, 0, 0),
