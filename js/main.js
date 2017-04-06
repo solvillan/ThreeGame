@@ -79,6 +79,7 @@ var score = 0;
 var health = 100;
 var gameOver = false;
 var running = false;
+var lastShot = 0;
 
 camera.position.z = 5;
 
@@ -115,7 +116,7 @@ function removeEnemy(id) {
 }
 
 function isEnemy(id) {
-    return enemies[id] ? true : false;
+    return !!enemies[id];
 }
 
 function render() {
@@ -144,6 +145,7 @@ function printScore() {
 }
 
 function update() {
+    lastShot++;
     if (Key.isDown(Key.UP)) {
         player.mesh.translateZ(-0.1);
     }
@@ -155,6 +157,21 @@ function update() {
     }
     if (Key.isDown(Key.LEFT)) {
         player.mesh.translateX(-0.1);
+    }
+
+    if (Key.isDown(Key.CLEFT)) {
+        player.mesh.rotation.y += Math.PI * 0.01;
+        camera.rotation.y = player.mesh.rotation.y;
+    }
+
+    if (Key.isDown(Key.CRIGHT)) {
+        player.mesh.rotation.y -= Math.PI * 0.01;
+        camera.rotation.y = player.mesh.rotation.y;
+    }
+
+    if (Key.isDown(Key.SHOOT) && lastShot >= 10) {
+        shoot();
+        lastShot = 0;
     }
 
     //Stay within plane
