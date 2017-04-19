@@ -4,6 +4,16 @@
  */
 
 /**
+ * Imports
+ */
+import THREE from "./lib/vendor/Three";
+import Cube from "./lib/Models/Cube";
+import Plane from "./lib/Models/Plane";
+import Bullet from "./lib/Entities/Bullet";
+import Enemy from "./lib/Entities/Enemy";
+
+
+/**
  * The global scene
  * @type {THREE.Scene}
  */
