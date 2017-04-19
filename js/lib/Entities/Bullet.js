@@ -1,3 +1,12 @@
+/**
+ * Bullet
+ * @param x {number}
+ * @param y {number}
+ * @param z {number}
+ * @param angle {number}
+ * @param id {string}
+ * @constructor
+ */
 var Bullet = function (x, y, z, angle, id) {
     //this._cube = new Cube(x, y, z, 0.1, 0.1, 0.1, 0x333333, "img/pillar.gif", THREE.RepeatWrapping, THREE.RepeatWrapping, 1, 1);
     this._cube = new ColladaModel(x, y, z, 'models/bullet.dae', scene, id);
@@ -9,6 +18,10 @@ var Bullet = function (x, y, z, angle, id) {
     this.angle = angle;
 };
 
+/**
+ * Update bullet logic
+ * @param scene
+ */
 Bullet.prototype.update = function (scene) {
     if (this._cube.loaded) {
         this._cube.mesh.name = this.id;

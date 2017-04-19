@@ -1,9 +1,32 @@
+/**
+ * Main script - Entry point.
+ * @author Rickard Doverfelt
+ */
+
+/**
+ * The global scene
+ * @type {THREE.Scene}
+ */
 var scene = new THREE.Scene();
+
+/**
+ * Global camera
+ * @type {THREE.PerspectiveCamera}
+ */
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+/*
+    Audio-related vars
+ */
+
 var aListener = new THREE.AudioListener();
 camera.add(aListener);
 var audioLoader = new THREE.AudioLoader();
 
+/**
+ * Shoot sound
+ * @type {THREE.Audio}
+ */
 var shootSound = new THREE.Audio(aListener);
 audioLoader.load("sound/shoot.wav", function (buffer) {
    shootSound.setBuffer(buffer);
@@ -11,6 +34,10 @@ audioLoader.load("sound/shoot.wav", function (buffer) {
    shootSound.setVolume(1);
 });
 
+/**
+ * Hurt sound
+ * @type {THREE.Audio}
+ */
 var hurtSound = new THREE.Audio(aListener);
 audioLoader.load("sound/hurt.wav", function (buffer) {
     hurtSound.setBuffer(buffer);
@@ -18,6 +45,10 @@ audioLoader.load("sound/hurt.wav", function (buffer) {
     hurtSound.setVolume(1);
 });
 
+/**
+ * Hit sound
+ * @type {THREE.Audio}
+ */
 var hitSound = new THREE.Audio(aListener);
 audioLoader.load("sound/hit.wav", function (buffer) {
     hitSound.setBuffer(buffer);
@@ -25,28 +56,47 @@ audioLoader.load("sound/hit.wav", function (buffer) {
     hitSound.setVolume(1);
 });
 
+/**
+ * Global renderer
+ * @type {THREE.WebGLRenderer}
+ */
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+/**
+ * Polyfill for requestPointerLock
+ */
 renderer.domElement.requestPointerLock = renderer.domElement.requestPointerLock ||
     renderer.domElement.mozRequestPointerLock;
 
-var lastMousePos = {};
-
+/**
+ * Player torch
+ * @type {THREE.PointLight}
+ */
 var playerLight = new THREE.PointLight(0xffdd99, 1, 30);
 scene.add(playerLight);
 
-
+/**
+ * The player
+ * @type {Cube}
+ */
 var player = new Cube(0, 1, 0, 1, 2, 1, 0x00ff00, "img/pillar.gif", THREE.RepeatWrapping, THREE.RepeatWrapping, 1, 2);
 player.mesh.name = THREE.Math.generateUUID();
-
 scene.add( player.mesh );
 
+/**
+ * The floor
+ * @type {Plane}
+ */
 var plane = new Plane(0, 0, 0, 40, 40, 0xffffff, "img/ground.jpg", 40, 40); // Old color: 0x35d600
 plane.mesh.rotation.x = (3*Math.PI)/2;
 scene.add(plane.mesh);
 
+/**
+ * The borders
+ * @type {{left: Cube, right: Cube, top: Cube, bottom: Cube}}
+ */
 var borders = {
     left: new Cube(plane.mesh.position.x-20.05, 0.5, plane.mesh.position.z, 0.2, 1, 40, 0xffffff, "img/wall.jpg", THREE.RepeatWrapping, THREE.RepeatWrapping, 40, 1),
     right: new Cube(plane.mesh.position.x+20.05, 0.5, plane.mesh.position.z, 0.2, 1, 40, 0xffffff, "img/wall.jpg", THREE.RepeatWrapping, THREE.RepeatWrapping, 40, 1),
@@ -58,23 +108,29 @@ scene.add(borders.right.mesh);
 scene.add(borders.top.mesh);
 scene.add(borders.bottom.mesh);
 
-/*var sky = new SkyBox(0, 0, 0, 2, 0xffffff, "img/sky.jpg", THREE.RepeatWrapping, THREE.RepeatWrapping, 10, 10);
-//sky.mesh.scale.set(-1,1,1);
-scene.add(sky.mesh);
-*/
-//var ambient = new THREE.AmbientLight(0x030306, 0.5);
-//var ambient = new THREE.AmbientLight(0xffffff, 1);
-//scene.add(ambient);
-
+/**
+ * UI elements
+ */
 var scoreDiv = document.getElementsByClassName('score')[0];
 var healthBar = document.getElementsByClassName('healthBar')[0];
 var crosshair = document.getElementsByClassName('crosshair')[0];
 var gameOverView = document.getElementsByClassName('gameOver')[0];
 var goScore = document.getElementsByClassName('finalScore')[0];
 
+/**
+ * Enemy container
+ * @type {{}}
+ */
 var enemies = {};
+/**
+ * Bullet container
+ * @type {Array}
+ */
 var bullets = [];
 
+/**
+ * Gameplay vars
+ */
 var score = 0;
 var health = 100;
 var gameOver = false;
@@ -83,11 +139,19 @@ var lastShot = 0;
 
 camera.position.z = 5;
 
+/**
+ * Add an Enemy
+ * @return void
+ */
 function addEnemy() {
     var uuid = THREE.Math.generateUUID();
     enemies[uuid] = new Enemy((Math.random()-0.5)*40, (Math.random()-0.5)*40, uuid, scene);
 }
 
+/**
+ * Shoot a bullet
+ * @return void
+ */
 function shoot() {
     if (shootSound.isPlaying) shootSound.stop();
     shootSound.play();
@@ -95,6 +159,10 @@ function shoot() {
     scene.add(bullets[bullets.length-1]._cube.mesh);
 }
 
+/**
+ * Remove bullet with id
+ * @param id
+ */
 function removeBullet(id) {
     var i;
     for (i = 0; i < bullets.length; i++) {
@@ -106,6 +174,10 @@ function removeBullet(id) {
     }
 }
 
+/**
+ * Remove enemy with id
+ * @param id
+ */
 function removeEnemy(id) {
     if (enemies[id]) {
         scene.remove(enemies[id]._cube.mesh);
@@ -115,10 +187,18 @@ function removeEnemy(id) {
     }
 }
 
+/**
+ * Check if entity is an enemy
+ * @param id
+ * @return {boolean}
+ */
 function isEnemy(id) {
     return !!enemies[id];
 }
 
+/**
+ * Main render loop
+ */
 function render() {
     requestAnimationFrame(render);
     //scene.updateMatrixWorld(false);
@@ -135,15 +215,28 @@ function render() {
     }
 }
 
+/**
+ * Calculate and add score
+ * @param startx number
+ * @param starty number
+ * @param startz number
+ * @param hit THREE.Vector3
+ */
 function addScore(startx, starty, startz, hit) {
     var start = new THREE.Vector3(startx, starty, startz);
     score += Math.min(Math.floor(Math.exp(start.distanceTo(hit)/4)-1), 100);
 }
 
+/**
+ * Print score to UI
+ */
 function printScore() {
     scoreDiv.innerHTML = "Score: " + score;
 }
 
+/**
+ * Update logic
+ */
 function update() {
     lastShot++;
     if (Key.isDown(Key.UP)) {
@@ -201,48 +294,62 @@ function update() {
     }
 
     printScore();
-    //console.log('width: ' + (200*(health/100)) + 'px;background-color: rgb(' + Math.abs(255*((health/100))) + ", " + Math.abs(255*(health/100)) + ", 0);")
     healthBar.setAttribute('style', 'width: ' + (200*(health/100)) + 'px;background-color: rgb(' + Math.floor(Math.abs(255*(1-(health/100)))) + ", " + Math.floor(Math.abs(255*(health/100))) + ", 0);");
 
     camera.position.set(player.mesh.position.x - Math.sin(player.mesh.rotation.y), player.mesh.position.y + 0.7, player.mesh.position.z - Math.cos(player.mesh.rotation.y));
     playerLight.position.set(player.mesh.position.x, player.mesh.position.y + 1.5, player.mesh.position.z);
-    //sky.mesh.position.set(player.mesh.position.x - 5*Math.sin(player.mesh.rotation.y), player.mesh.position.y + 0.7, player.mesh.position.z - 5*Math.cos(player.mesh.rotation.y));
-    //camera.rotation.x = -calcRotation(Mouse.getY(), window.innerHeight);
 }
 
+/**
+ * Calculate rotation from mouse delta
+ * @param delta
+ * @param max
+ * @return {number}
+ */
 function calcRotation(delta, max) {
     return (delta/max)*Math.PI;
 }
 
+/**
+ * Listen to keydown event and forward to Key
+ */
 window.addEventListener('keydown', function (event) {
     Key.onKeyDown(event);
 });
 
+/**
+ * Listen to keyup event and forward to Key
+ */
 window.addEventListener('keyup', function (event) {
     Key.onKeyUp(event);
 });
 
+/**
+ * Update rotation
+ */
 function updatePos() {
     player.mesh.rotation.y -= calcRotation(Mouse.getDX(), window.innerWidth);
-    //player.mesh.updateMatrix();
     camera.rotation.y = player.mesh.rotation.y;
-    //sky.mesh.rotation.y = player.mesh.rotation.y;
-    //camera.rotation.x += calcRotation(Mouse.getDY(), window.innerHeight);
 }
+
+/**
+ * Listen for mousemove
+ */
 document.addEventListener('mousemove', function (event) {
-    lastMousePos = Mouse.getPosition();
     Mouse.update(renderer.domElement, event);
     if (document.pointerLockElement === renderer.domElement ||
         document.mozPointerLockElement === renderer.domElement) updatePos();
     return false;
 });
 
+/**
+ * Listen for click
+ */
 renderer.domElement.addEventListener('click', function (event) {
     renderer.domElement.requestPointerLock();
     running |= true;
     shoot();
 });
 
-lastMousePos = Mouse.getPosition();
-
+// Start render loop
 render();

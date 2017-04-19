@@ -1,4 +1,5 @@
 /**
+ * Handles Key Input
  * Inspired by http://nokarma.org/2011/02/27/javascript-game-development-keyboard-input/
  * @type {{_pressed: {}, LEFT: number, RIGHT: number, UP: number, DOWN: number, isDown: Key.isDown, onKeyDown: Key.onKeyDown, onKeyUp: Key.onKeyUp}}
  */
@@ -29,6 +30,10 @@ var Key = {
     }
 };
 
+/**
+ * Mouse handler
+ * @type {{_position: {x: number, y: number}, _delta: {x: number, y: number}, getPosition: Mouse.getPosition, getX: Mouse.getX, getY: Mouse.getY, getDelta: Mouse.getDelta, getDX: Mouse.getDX, getDY: Mouse.getDY, update: Mouse.update}}
+ */
 var Mouse = {
     _position: {x: 0, y: 0},
     _delta: {x: 0, y: 0},

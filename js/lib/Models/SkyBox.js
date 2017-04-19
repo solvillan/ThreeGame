@@ -1,3 +1,18 @@
+/**
+ * A SkyBox
+ * @ignore
+ * @param x
+ * @param y
+ * @param z
+ * @param radius
+ * @param color
+ * @param texture
+ * @param wrapS
+ * @param wrapT
+ * @param wh
+ * @param wv
+ * @constructor
+ */
 var SkyBox = function(x, y, z, radius, color, texture, wrapS, wrapT, wh, wv) {
     this.texture = new THREE.TextureLoader().load( texture);
     this.texture.wrapS = wrapS;

@@ -1,7 +1,18 @@
+/**
+ * Enemy
+ * @param x {number}
+ * @param z {number}
+ * @param id {string}
+ * @param scene {THREE.Scene}
+ * @constructor
+ */
 var Enemy = function (x, z, id, scene) {
     this._cube = new ColladaModel(x, 1, z, 'models/enemy2.dae', scene, id);
 };
 
+/**
+ * Update enemy logic
+ */
 Enemy.prototype.update = function () {
     if (this._cube.mesh == null || this._cube.mesh == undefined || !this._cube.loaded) return;
     this._cube.mesh.name = this.id;
