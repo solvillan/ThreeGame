@@ -2,7 +2,7 @@
  * Global OBJLoader
  * @type {THREE.OBJLoader}
  */
-var loader = new THREE.OBJLoader();
+const loader = new THREE.OBJLoader();
 
 /**
  * A Model from an .obj file
@@ -19,18 +19,19 @@ var loader = new THREE.OBJLoader();
  * @param id {string}
  * @constructor
  */
-var OBJModel = function(x, y, z, color, texture, wrapS, wrapT, wh, wv, scene, id) {
-    this.texture = new THREE.TextureLoader().load( texture);
-    this.texture.wrapS = wrapS;
-    this.texture.wrapT = wrapT;
-    this.texture.repeat.set(wh, wv);
-    this.mesh = null;
-    var model = this;
-    loader.load('models/teapot.obj', function (object) {
-        model.mesh = object;
-        scene.add(model.mesh);
-        model.mesh.position.set(x, y, z);
-        model.mesh.scale.set(0.01, 0.01, 0.01);
-        model.mesh.name = id;
-    });
-};
+export default class OBJModel {
+    constructor(x, y, z, color, texture, wrapS, wrapT, wh, wv, scene, id) {
+        this.texture = new THREE.TextureLoader().load(texture);
+        this.texture.wrapS = wrapS;
+        this.texture.wrapT = wrapT;
+        this.texture.repeat.set(wh, wv);
+        this.mesh = null;
+        loader.load('models/teapot.obj', function (object) {
+            this.mesh = object;
+            scene.add(this.mesh);
+            this.mesh.position.set(x, y, z);
+            this.mesh.scale.set(0.01, 0.01, 0.01);
+            this.mesh.name = id;
+        }.bind(this));
+    }
+}

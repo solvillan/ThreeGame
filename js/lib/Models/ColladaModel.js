@@ -1,8 +1,9 @@
+import ColladaLoader from "three-collada-loader";
 /**
  * Global ColladaLoader
- * @type {THREE.ColladaLoader}
+ * @type {ColladaLoader}
  */
-var loader = new THREE.ColladaLoader();
+const loader = new ColladaLoader();
 loader.options.convertUpAxis = true;
 loader.options.upAxis = "Z";
 
@@ -16,19 +17,21 @@ loader.options.upAxis = "Z";
  * @param id {string}
  * @constructor
  */
-var ColladaModel = function(x, y, z, path, scene, id) {
-    this.mesh = null;
-    this.loaded = false;
-    loader.load(path, id, function (object) {
-        this.mesh = object.scene;
-        this.mesh.position.set(x, y, z);
-        this.mesh.name = id;
-        object.scene.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.name = id;
-            }
+export default class ColladaModel {
+    constructor(x, y, z, path, scene, id) {
+        this.mesh = null;
+        this.loaded = false;
+        loader.load(path, id, function (object) {
+            this.mesh = object.scene;
+            this.mesh.position.set(x, y, z);
+            this.mesh.name = id;
+            object.scene.traverse(function (child) {
+                if (child instanceof THREE.Mesh) {
+                    child.name = id;
+                }
+            }.bind(this));
+            scene.add(this.mesh);
+            this.loaded = true;
         }.bind(this));
-        scene.add(this.mesh);
-        this.loaded = true;
-    }.bind(this));
-};
+    }
+}

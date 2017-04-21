@@ -4,70 +4,70 @@
  * @type {{_pressed: {}, LEFT: number, RIGHT: number, UP: number, DOWN: number, isDown: Key.isDown, onKeyDown: Key.onKeyDown, onKeyUp: Key.onKeyUp}}
  */
 
-var Key = {
-    _pressed: {},
+export class Key {
+    static _pressed = {};
 
-    LEFT: 65,
-    RIGHT: 68,
-    UP: 87,
-    DOWN: 83,
-    CLEFT: 37,
-    CRIGHT: 39,
-    CUP: 38,
-    CDOWN: 40,
-    SHOOT: 32,
+    static LEFT = 65;
+    static RIGHT = 68;
+    static UP = 87;
+    static DOWN = 83;
+    static CLEFT = 37;
+    static CRIGHT = 39;
+    static CUP = 38;
+    static CDOWN = 40;
+    static SHOOT = 32;
 
-    isDown: function (keyCode) {
+    static isDown(keyCode) {
         return this._pressed[keyCode];
-    },
+    }
 
-    onKeyDown: function (event) {
+    static onKeyDown(event) {
         this._pressed[event.keyCode] = true;
-    },
+    }
 
-    onKeyUp: function(event) {
+    static onKeyUp(event) {
         delete this._pressed[event.keyCode];
     }
-};
+}
 
 /**
  * Mouse handler
  * @type {{_position: {x: number, y: number}, _delta: {x: number, y: number}, getPosition: Mouse.getPosition, getX: Mouse.getX, getY: Mouse.getY, getDelta: Mouse.getDelta, getDX: Mouse.getDX, getDY: Mouse.getDY, update: Mouse.update}}
  */
-var Mouse = {
-    _position: {x: 0, y: 0},
-    _delta: {x: 0, y: 0},
+export class Mouse {
+    _position = {x: 0, y: 0};
+    _delta = {x: 0, y: 0};
 
-    getPosition: function () {
+    static getPosition() {
         return this._position;
-    },
+    }
 
-    getX: function () {
+    static getX() {
         return this._position.x;
-    },
+    }
 
-    getY: function () {
+    static getY() {
         return this._position.y;
-    },
+    }
 
-    getDelta: function () {
+    static getDelta() {
         return this._delta;
-    },
+    }
 
-    getDX: function () {
+    static getDX() {
         return this._delta.x;
-    },
+    }
 
-    getDY: function () {
+    static getDY() {
         return this._delta.y;
-    },
+    }
 
-    update: function (canvas, evt) {
-        var rect = canvas.getBoundingClientRect();
+    static update(canvas, evt) {
+        let rect = canvas.getBoundingClientRect();
         this._position.x = evt.clientX - rect.left;
         this._position.y =  evt.clientY - rect.top;
         this._delta.x = evt.movementX;
         this._delta.y = evt.movementY;
     }
 
-};
+}
