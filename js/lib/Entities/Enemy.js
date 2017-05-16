@@ -14,7 +14,7 @@ var Enemy = function (x, z, id, scene) {
  * Update enemy logic
  */
 Enemy.prototype.update = function () {
-    if (this._cube.mesh == null || this._cube.mesh == undefined || !this._cube.loaded) return;
+    if (this._cube.mesh === null || this._cube.mesh === undefined || !this._cube.loaded) return;
     this._cube.mesh.name = this.id;
     this._cube.mesh.castShadow = true;
     var speed = Math.min(Math.exp(score/50000)-0.975, 0.8);

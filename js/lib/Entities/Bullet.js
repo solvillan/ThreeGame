@@ -33,7 +33,7 @@ Bullet.prototype.update = function (scene) {
         var raycaster = new THREE.Raycaster(this._cube.mesh.position, direction, 0.75);
         var intersects = raycaster.intersectObjects(scene.children, true);
         for (var i = 0; i < intersects.length; i++) {
-            if (intersects[i].object != this._cube.mesh && intersects[i].object != player.mesh) {
+            if (intersects[i].object !== this._cube.mesh && intersects[i].object !== player.mesh) {
                 if (isEnemy(intersects[i].object.name)) {
                     intersects[i].object.material.color.set(0x0000ff);
                     removeBullet(this._cube.mesh.name);
