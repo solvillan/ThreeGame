@@ -42,9 +42,9 @@ var audioLoader = new THREE.AudioLoader();
  */
 var shootSound = new THREE.Audio(aListener);
 audioLoader.load("sound/shoot.wav", function (buffer) {
-   shootSound.setBuffer(buffer);
-   shootSound.setLoop(false);
-   shootSound.setVolume(1);
+    shootSound.setBuffer(buffer);
+    shootSound.setLoop(false);
+    shootSound.setVolume(1);
 });
 
 /**
