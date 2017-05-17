@@ -365,6 +365,7 @@ function fetchHighscores() {
     fetch.onreadystatechange = function () {
         if (fetch.readyState = XMLHttpRequest.DONE) {
             var data = JSON.parse(fetch.responseText);
+            scores.innerHTML = "";
             for (var i = 0; i < data.length; i++) {
                 scores.innerHTML += "<tr><td>" + data[i].name + "</td><td>" + data[i].score + "</td></tr>";
             }
