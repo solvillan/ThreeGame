@@ -27,6 +27,7 @@ document.body.appendChild(renderer.domElement);
  * Polyfill for requestPointerLock
  */
 renderer.domElement.requestPointerLock = renderer.domElement.requestPointerLock || renderer.domElement.mozRequestPointerLock;
+renderer.domElement.exitPointerLock = renderer.domElement.exitPointerLock || renderer.domElement.mozExitPointerLock;
 
 /*
     Audio-related vars
@@ -115,6 +116,8 @@ var healthBar = document.getElementsByClassName('healthBar')[0];
 var crosshair = document.getElementsByClassName('crosshair')[0];
 var gameOverView = document.getElementsByClassName('gameOver')[0];
 var goScore = document.getElementsByClassName('finalScore')[0];
+var menu = document.getElementsByClassName('menu')[0];
+var scores = document.getElementById("scores");
 
 /**
  * Enemy container
@@ -208,6 +211,7 @@ function render() {
             goScore.innerHTML = score;
             crosshair.setAttribute("style", "opacity: 0;");
             gameOverView.setAttribute("style", "display: block; opacity: 1;");
+            renderer.domElement.exitPointerLock();
         }
     }
 }
@@ -348,5 +352,37 @@ renderer.domElement.addEventListener('click', function (event) {
     shoot();
 });
 
-// Start render loop
-render();
+function start() {
+    renderer.domElement.requestPointerLock();
+    running |= true;
+    // Start render loop
+    render();
+}
+
+function fetchHighscores() {
+    var fetch = new XMLHttpRequest();
+    fetch.open("GET", "highscore.php", true);
+    fetch.onreadystatechange = function () {
+        if (fetch.readyState = XMLHttpRequest.DONE) {
+            var data = JSON.parse(fetch.responseText);
+            scores.innerHTML = "";
+            for (var i = 0; i < data.length; i++) {
+                scores.innerHTML += "<tr><td>" + data[i].name + "</td><td>" + data[i].score + "</td></tr>";
+            }
+        }
+    };
+    fetch.send();
+}
+
+function submitScore() {
+    var name = document.getElementsByName("name")[0];
+    if (name.value !== "") {
+        var post = new XMLHttpRequest();
+        post.open("POST", "highscore.php", true);
+        post.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        post.send("payload=" + JSON.stringify({name: name.value, score: score}))
+    } else {
+
+    }
+    return false;
+}

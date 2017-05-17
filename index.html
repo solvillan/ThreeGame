@@ -5,7 +5,7 @@
     <title>ThreeGame</title>
     <link rel="stylesheet" href="css/main.css">
 </head>
-<body>
+<body onload="fetchHighscores();">
 <div class="score">
 
 </div>
@@ -16,10 +16,27 @@
     <img src="img/crosshair.png">
 </div>
 
+<div class="menu">
+    <div class="center">
+        <h1>ThreeGame</h1>
+        <h2>Highscores</h2>
+        <table id="scores">
+
+        </table>
+        <button class="start" onclick="start();">Start Game!</button>
+    </div>
+</div>
+
 <div class="gameOver">
     <div class="center">
         <h1>Game Over!</h1>
         <h2>Score: <span class="finalScore"></span></h2>
+        <form onsubmit="return submitScore();">
+            <label>
+                <input type="text" name="name" placeholder="Name">
+            </label>
+            <input type="submit">
+        </form>
     </div>
 </div>
 

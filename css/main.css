@@ -91,3 +91,35 @@ canvas {
     padding: 20px;
     display: inherit;
 }
+
+
+.menu {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    background: rgba(0,0,0,0.6);
+    transition: opacity 1s;
+    opacity: 1;
+    display: block;
+}
+
+.menu .center {
+    color: #fff;
+    background-color: rgba(62, 252, 255, 0.75);
+    border-radius: 5px;
+    border: 2px solid rgb(48, 173, 176);
+    padding: 20px;
+    display: inherit;
+}
+
+.start {
+    color: #fff;
+    background-color: rgba(62, 252, 255, 0.75);
+    border-radius: 5px;
+    border: 2px solid rgb(48, 173, 176);
+    padding: 20px;
+    width: 100%;
+}
