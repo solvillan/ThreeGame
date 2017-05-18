@@ -211,7 +211,7 @@ function render() {
             goScore.innerHTML = score;
             crosshair.setAttribute("style", "opacity: 0;");
             gameOverView.setAttribute("style", "display: block; opacity: 1;");
-            renderer.domElement.exitPointerLock();
+            renderer.domElement.webkitExitPointerLock();
         }
     }
 }
@@ -355,6 +355,10 @@ renderer.domElement.addEventListener('click', function (event) {
 function start() {
     renderer.domElement.requestPointerLock();
     running |= true;
+    menu.setAttribute("style", "opacity: 0;");
+    window.setTimeout(function () {
+        menu.setAttribute("style", "display: none;");
+    }, 1000);
     // Start render loop
     render();
 }
