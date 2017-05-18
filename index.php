@@ -1,3 +1,7 @@
+<?php
+    $csrf = openssl_digest($_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT'].$_SERVER['SERVER_NAME'], "SHA512");
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,6 +36,7 @@
         <h1>Game Over!</h1>
         <h2>Score: <span class="finalScore"></span></h2>
         <form onsubmit="return submitScore();">
+            <input type="hidden" name="csrf" value="<?php echo $csrf; ?>">
             <label>
                 <input type="text" name="name" placeholder="Name">
             </label>
