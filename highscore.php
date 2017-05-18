@@ -6,7 +6,7 @@
  * Time: 11:32
  */
 
-$db = new mysqli("localhost", "root", "", "threeGame");
+$db = new mysqli("localhost", "root", "password", "threeGame");
 /*if (!$db->set_charset("utf-8")) {
     http_response_code(500);
     echo json_encode(["error" => "Internal server error", "errorCode" => $db->errno]);
@@ -17,6 +17,17 @@ header("Content-Type: application/json; charset=utf-8");
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($_POST['payload'])) {
+        if (isset($_POST['csrf'])) {
+            if ($_POST['csrf'] !== openssl_digest($_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . $_SERVER['SERVER_NAME'], "SHA512")) {
+                http_response_code(403);
+                echo json_encode(["error" => "Invalid CSRF-Token"]);
+                die();
+            }
+        } else {
+            http_response_code(400);
+            echo json_encode(["error" => "No CSRF-Token"]);
+            die();
+        }
         $insert = $db->prepare("INSERT INTO scores VALUES (0, ?, ?);");
         $data = json_decode($_POST["payload"]);
         $name = $data->name;

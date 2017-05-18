@@ -380,11 +380,12 @@ function fetchHighscores() {
 
 function submitScore() {
     var name = document.getElementsByName("name")[0];
+    var csrf = document.getElementsByName('csrf')[0];
     if (name.value !== "") {
         var post = new XMLHttpRequest();
         post.open("POST", "highscore.php", true);
         post.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        post.send("payload=" + JSON.stringify({name: name.value, score: score}))
+        post.send("payload=" + JSON.stringify({name: name.value, score: score}) + "&csrf=" + csrf.value);
     } else {
 
     }
